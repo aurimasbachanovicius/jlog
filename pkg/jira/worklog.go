@@ -9,24 +9,27 @@ import (
 	t "time"
 )
 
+type contentMeta struct {
+	Text string `json:"text"`
+	Type string `json:"type"`
+}
+
+type content struct {
+	Type    string        `json:"type"`
+	Content []contentMeta `json:"content"`
+}
+
+type comment struct {
+	Type    string    `json:"type"`
+	Version int       `json:"version"`
+	Content []content `json:"content"`
+}
+
 type worklog struct {
-	TimeSpentSeconds int `json:"timeSpentSeconds"`
-	Visibility       struct {
-		Type  string `json:"type"`
-		Value string `json:"value"`
-	} `json:"visibility"`
-	Comment struct {
-		Type    string `json:"type"`
-		Version int    `json:"version"`
-		Content []struct {
-			Type    string `json:"type"`
-			Content []struct {
-				Text string `json:"text"`
-				Type string `json:"type"`
-			} `json:"content"`
-		} `json:"content"`
-	} `json:"comment"`
-	Started string `json:"started"`
+	TimeSpentSeconds int      `json:"timeSpentSeconds"`
+	Visibility       struct{} `json:"visibility"`
+	Comment          comment  `json:"comment"`
+	Started          string   `json:"started"`
 }
 
 func (j Jira) Log(time int, key string) error {
@@ -34,7 +37,20 @@ func (j Jira) Log(time int, key string) error {
 
 	jsonData, err := json.Marshal(worklog{
 		TimeSpentSeconds: time,
-		Started:          t.Now().UTC().Format("2006-01-02T15:04:05-0700"),
+		Started:          t.Now().UTC().Format("2006-01-02T15:04:05.999-0700"),
+		Comment: comment{
+			Type:    "doc",
+			Version: 1,
+			Content: []content{
+				{
+					Type: "paragraph",
+					Content: []contentMeta{{
+						Text: "jlog logged",
+						Type: "text",
+					}},
+				},
+			},
+		},
 	})
 
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(jsonData))
