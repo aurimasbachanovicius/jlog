@@ -26,18 +26,18 @@ type comment struct {
 }
 
 type worklog struct {
-	TimeSpentSeconds int      `json:"timeSpentSeconds"`
-	Visibility       struct{} `json:"visibility"`
-	Comment          comment  `json:"comment"`
-	Started          string   `json:"started"`
+	TimeSpent  string   `json:"timeSpent"`
+	Visibility struct{} `json:"visibility"`
+	Comment    comment  `json:"comment"`
+	Started    string   `json:"started"`
 }
 
-func (j Jira) Log(time int, key string) error {
+func (j Jira) Log(time string, key string) error {
 	url := fmt.Sprintf("https://%s/rest/api/3/issue/%s/worklog", j.Domain, key)
 
 	jsonData, err := json.Marshal(worklog{
-		TimeSpentSeconds: time,
-		Started:          t.Now().UTC().Format("2006-01-02T15:04:05.999-0700"),
+		TimeSpent: time,
+		Started:   t.Now().UTC().Format("2006-01-02T15:04:05.999-0700"),
 		Comment: comment{
 			Type:    "doc",
 			Version: 1,
