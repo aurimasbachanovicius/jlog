@@ -1,4 +1,1 @@
-.env
-log
 build/
-http-client.private.env.json
