@@ -1,4 +1,4 @@
-.PHONY: build
+.PHONY: build binary-to-user install
 
 build:
 	go build -o build/jlog github.com/aurimasbachanovicius/jlog/v2/cmd/log
