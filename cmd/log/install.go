@@ -4,20 +4,13 @@ import (
 	"bufio"
 	"encoding/base64"
 	"fmt"
-	"log"
 	"os"
-	"os/user"
 	"strings"
 
 	"github.com/aurimasbachanovicius/jlog/v2/pkg/config"
 )
 
-func main() {
-	usr, err := user.Current()
-	if err != nil {
-		log.Fatalf("could not get current os user: %s", err)
-	}
-
+func install(dir string, file string) error {
 	reader := bufio.NewReader(os.Stdin)
 
 	fmt.Print("Jira server domain -> ")
@@ -34,12 +27,14 @@ func main() {
 
 	auth := base64.StdEncoding.EncodeToString([]byte(fmt.Sprintf("%s:%s", email, token)))
 
-	err = config.CreateConfig(usr.HomeDir+"/.jlog/config/", "config.yaml", config.Config{
+	err := config.CreateConfig(dir, file, config.Config{
 		JiraServerDomain: domain,
 		JiraAuth:         fmt.Sprintf("Basic %s", auth),
 	})
 
 	if err != nil {
-		log.Fatalf("Could not create config: %s", err)
+		return fmt.Errorf("could not create config: %s", err)
 	}
+
+	return nil
 }

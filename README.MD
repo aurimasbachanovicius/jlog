@@ -11,7 +11,7 @@ Worklog jira time in CLI.
 ### steps:
 
 * `make install` compile and cp binaries to `/usr/local/bin/`
-* `jlog-install`
+* `jlog install`
     * enter domain (domain.atlassian.net)
     * enter jira username/email (myjiraname@organisation.com)
     * enter jira api token (generated token https://id.atlassian.com/manage-profile/security/api-tokens)
